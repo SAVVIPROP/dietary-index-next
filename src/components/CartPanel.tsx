@@ -7,8 +7,10 @@ import {
   buildAmazonUrl,
   buildAmazonSearchUrl,
   buildAmazonMulticartUrl,
+  buildAllIherbUrls,
   buildIherbUrl,
   partitionBasket,
+  shouldShowAmazon,
   detectRegion,
   countryToRegion,
   type AffiliateRegion,
@@ -121,11 +123,9 @@ export default function CartPanel() {
 
   const handleIherbAll = () => {
     if (items.length === 0) return;
-    const primaryTerm = items[0].product.iherbSearchTerm;
-    const iherbBase = `https://www.iherb.com/search?kw=${encodeURIComponent(primaryTerm)}`;
-    const encoded = encodeURIComponent(iherbBase);
-    const url = `https://www.awin1.com/cread.php?awinmid=76736&awinaffid=2873641&ued=${encoded}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+    // iHerb has no multicart — open one tab per supplement (matches vitaei.com openAllTabs())
+    const urls = buildAllIherbUrls(items.map(i => i.product));
+    urls.forEach(url => window.open(url, '_blank', 'noopener,noreferrer'));
   };
 
   return (
@@ -245,13 +245,15 @@ export default function CartPanel() {
           <div className="border-t border-border px-5 py-4 flex flex-col gap-3 shrink-0">
             {/* Checkout row */}
             <div className="flex gap-2">
-              <button
-                onClick={handleAmazonAll}
-                className="btn-amazon flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
-              >
-                <AmazonIcon />
-                Add all to {regionLabel[region]}
-              </button>
+              {shouldShowAmazon(region) && (
+                <button
+                  onClick={handleAmazonAll}
+                  className="btn-amazon flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
+                >
+                  <AmazonIcon />
+                  Add all to {regionLabel[region]}
+                </button>
+              )}
               <button
                 onClick={handleIherbAll}
                 className="btn-iherb flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"

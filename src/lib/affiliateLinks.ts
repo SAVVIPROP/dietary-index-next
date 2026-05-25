@@ -663,6 +663,15 @@ export const ARTICLE_SUPPLEMENT_MAP: Record<string, string[]> = {
 
 };
 
+// Countries where Amazon affiliate tags are configured and live
+// CA and AU have placeholder tags — Amazon button is hidden for those visitors
+const AMAZON_CONFIGURED_REGIONS: Set<AffiliateRegion> = new Set(['US', 'UK', 'DE']);
+
+// Returns true if the Amazon button should be shown for this region
+export function shouldShowAmazon(region: AffiliateRegion): boolean {
+  return AMAZON_CONFIGURED_REGIONS.has(region);
+}
+
 // Map ISO 3166-1 alpha-2 country code -> affiliate region
 // Matches vitaei.com pickAmazonRegion() routing table exactly
 export function countryToRegion(country: string): AffiliateRegion {
@@ -762,4 +771,213 @@ export function buildIherbUrl(product: SupplementEntry): string {
   const iherbBase = `https://www.iherb.com/search?kw=${encodeURIComponent(product.iherbSearchTerm)}`;
   const encoded = encodeURIComponent(iherbBase);
   return `https://www.awin1.com/cread.php?awinmid=76736&awinaffid=2873641&ued=${encoded}`;
+}
+
+// Build all iHerb URLs for a basket — one per supplement (iHerb has no multicart)
+// Matches vitaei.com openAllTabs() — caller must call window.open() for each URL
+export function buildAllIherbUrls(products: SupplementEntry[]): string[] {
+  return products.map(p => buildIherbUrl(p));
+}
+
+// ── ALIAS_MAP — supplement name normalisation ────────────────────────────────
+// Maps normalised LLM output names → canonical SUPPLEMENT_PRODUCTS keys
+// Matches vitaei.com resolveProtocolMolecules.ts ALIAS_MAP
+export const ALIAS_MAP: Record<string, string> = {
+  // Omega-3
+  'omega 3': 'omega-3',
+  'omega 3 fatty acids': 'omega-3',
+  'omega-3 fatty acids': 'omega-3',
+  'fish oil': 'omega-3',
+  'epa dha': 'omega-3',
+  'omega 3 epa dha': 'omega-3',
+  'epa/dha': 'omega-3',
+  // Magnesium
+  'magnesium': 'magnesium',
+  'magnesium glycinate': 'magnesium',
+  'magnesium bisglycinate': 'magnesium',
+  'magnesium citrate': 'magnesium',
+  'magnesium malate': 'magnesium',
+  // Vitamin D
+  'vitamin d': 'vitamin-d',
+  'vitamin d3': 'vitamin-d',
+  'vitamin d 3': 'vitamin-d',
+  'cholecalciferol': 'vitamin-d',
+  // Vitamin K2
+  'vitamin k2': 'vitamin-k2',
+  'vitamin k 2': 'vitamin-k2',
+  'menaquinone': 'vitamin-k2',
+  'mk-7': 'vitamin-k2',
+  'mk7': 'vitamin-k2',
+  // Creatine
+  'creatine': 'creatine',
+  'creatine monohydrate': 'creatine',
+  // Zinc
+  'zinc': 'zinc',
+  'zinc bisglycinate': 'zinc',
+  'zinc picolinate': 'zinc',
+  'zinc gluconate': 'zinc',
+  // Selenium
+  'selenium': 'selenium',
+  'selenomethionine': 'selenium',
+  // Vitamin B6
+  'vitamin b6': 'vitamin-b6',
+  'pyridoxal 5 phosphate': 'vitamin-b6',
+  'p5p': 'vitamin-b6',
+  'pyridoxine': 'vitamin-b6',
+  // Iodine
+  'iodine': 'iodine',
+  'potassium iodide': 'iodine',
+  // Vitamin B12
+  'vitamin b12': 'vitamin-b12',
+  'methylcobalamin': 'vitamin-b12',
+  'cobalamin': 'vitamin-b12',
+  'cyanocobalamin': 'vitamin-b12',
+  // Folate
+  'folate': 'folate',
+  'folic acid': 'folate',
+  '5-mthf': 'folate',
+  'methylfolate': 'folate',
+  'l-methylfolate': 'folate',
+  // CoQ10
+  'coq10': 'coq10',
+  'coenzyme q10': 'coq10',
+  'ubiquinol': 'coq10',
+  'ubiquinone': 'coq10',
+  // Vitamin C
+  'vitamin c': 'vitamin-c',
+  'ascorbic acid': 'vitamin-c',
+  'ascorbate': 'vitamin-c',
+  // NMN
+  'nmn': 'nmn',
+  'nicotinamide mononucleotide': 'nmn',
+  // NR
+  'nr': 'nr',
+  'nicotinamide riboside': 'nr',
+  'tru niagen': 'nr',
+  // Berberine
+  'berberine': 'berberine',
+  'berberine hcl': 'berberine',
+  // Curcumin
+  'curcumin': 'curcumin',
+  'turmeric': 'curcumin',
+  'curcuma longa': 'curcumin',
+  'meriva': 'curcumin',
+  // Sulforaphane
+  'sulforaphane': 'sulforaphane',
+  'broccoli extract': 'sulforaphane',
+  'glucoraphanin': 'sulforaphane',
+  // Ashwagandha
+  'ashwagandha': 'ashwagandha',
+  'withania somnifera': 'ashwagandha',
+  'ksm-66': 'ashwagandha',
+  'ksm66': 'ashwagandha',
+  // L-Theanine
+  'l-theanine': 'l-theanine',
+  'l theanine': 'l-theanine',
+  'theanine': 'l-theanine',
+  // Collagen
+  'collagen': 'collagen',
+  'collagen peptides': 'collagen',
+  'hydrolysed collagen': 'collagen',
+  'verisol': 'collagen',
+  // Choline
+  'choline': 'choline',
+  'alpha gpc': 'choline',
+  'alpha-gpc': 'choline',
+  'cdp choline': 'choline',
+  'citicoline': 'choline',
+  // Iron
+  'iron': 'iron',
+  'iron bisglycinate': 'iron',
+  'ferrous bisglycinate': 'iron',
+  // NAC
+  'nac': 'nac',
+  'n-acetylcysteine': 'nac',
+  'n acetylcysteine': 'nac',
+  'n acetyl cysteine': 'nac',
+  // ALA
+  'ala': 'ala',
+  'alpha lipoic acid': 'ala',
+  'alpha-lipoic acid': 'ala',
+  'thioctic acid': 'ala',
+  // Quercetin
+  'quercetin': 'quercetin',
+  'quercetin dihydrate': 'quercetin',
+  // Lion's Mane
+  "lion's mane": 'lions-mane',
+  'lions mane': 'lions-mane',
+  'hericium erinaceus': 'lions-mane',
+  // Reishi
+  'reishi': 'reishi',
+  'ganoderma lucidum': 'reishi',
+  'lingzhi': 'reishi',
+  // Glycine
+  'glycine': 'glycine',
+  // Elderberry
+  'elderberry': 'elderberry',
+  'sambucus nigra': 'elderberry',
+  'black elderberry': 'elderberry',
+  // Taurine
+  'taurine': 'taurine',
+  // Spermidine
+  'spermidine': 'spermidine',
+  'wheat germ extract': 'spermidine',
+  // Urolithin A
+  'urolithin a': 'urolithin-a',
+  'urolithin-a': 'urolithin-a',
+  'mitopure': 'urolithin-a',
+  // Fibre
+  'fibre': 'fibre',
+  'fiber': 'fibre',
+  'psyllium husk': 'fibre',
+  'psyllium': 'fibre',
+  'inulin': 'fibre',
+  // Probiotic
+  'probiotic': 'probiotic',
+  'probiotics': 'probiotic',
+  'lactobacillus': 'probiotic',
+  'bifidobacterium': 'probiotic',
+  // Vitamin E
+  'vitamin e': 'vitamin-e',
+  'tocopherol': 'vitamin-e',
+  'tocotrienol': 'vitamin-e',
+  // Vitamin B1
+  'vitamin b1': 'vitamin-b1',
+  'thiamine': 'vitamin-b1',
+  'thiamin': 'vitamin-b1',
+  'benfotiamine': 'vitamin-b1',
+  // Vitamin B2
+  'vitamin b2': 'vitamin-b2',
+  'riboflavin': 'vitamin-b2',
+};
+
+// Normalise a supplement name for ALIAS_MAP lookup
+// Strips doses, timing words, hyphens, parentheses — matches vitaei.com normalise()
+function normaliseSupplementName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\d+[\s-]*(mg|mcg|ug|iu|g|ml|mmol)\b/gi, '') // strip doses
+    .replace(/\b(daily|per day|per week|pre-exercise|with meals|morning|evening|night)\b/gi, '')
+    .replace(/[()\[\]]/g, '') // strip parentheses
+    .replace(/[-_]/g, ' ')   // normalise separators
+    .replace(/\s+/g, ' ')    // collapse whitespace
+    .trim();
+}
+
+// Resolve a supplement name (from LLM/protocol output) to a SUPPLEMENT_PRODUCTS key
+// Uses 4-stage lookup: ALIAS_MAP → bare-key retry → exact name match → prefix match
+export function resolveSupplementKey(name: string): string | undefined {
+  const norm = normaliseSupplementName(name);
+  // Stage 1: ALIAS_MAP lookup
+  if (ALIAS_MAP[norm]) return ALIAS_MAP[norm];
+  // Stage 2: bare-key retry (strip trailing words like "500 mg" already done, try without parenthetical suffix)
+  const bareKey = norm.replace(/\s*\(.*$/, '').trim();
+  if (ALIAS_MAP[bareKey]) return ALIAS_MAP[bareKey];
+  // Stage 3: exact case-insensitive match against SUPPLEMENT_PRODUCTS keys
+  const keys = Object.keys(SUPPLEMENT_PRODUCTS);
+  const exactMatch = keys.find(k => k.replace(/-/g, ' ') === norm || k === norm.replace(/\s+/g, '-'));
+  if (exactMatch) return exactMatch;
+  // Stage 4: prefix match
+  const prefixMatch = keys.find(k => norm.startsWith(k.replace(/-/g, ' ')) || k.replace(/-/g, ' ').startsWith(norm));
+  return prefixMatch;
 }

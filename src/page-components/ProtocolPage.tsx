@@ -21,9 +21,12 @@ import {
   buildAmazonUrl,
   buildAmazonSearchUrl,
   buildAmazonMulticartUrl,
+  buildAllIherbUrls,
   buildIherbUrl,
   partitionBasket,
   getAsinForRegion,
+  shouldShowAmazon,
+  resolveSupplementKey,
   detectRegion,
   countryToRegion,
   type AffiliateRegion,
@@ -296,37 +299,10 @@ function PriorityCard({ priority }: { priority: ProtocolResult["keyPriorities"][
   );
 }
 
-// ── Supplement name → affiliate key mapping ──
-const SUPPLEMENT_KEY_MAP: Record<string, string> = {
-  "Omega-3 (EPA/DHA)": "omega-3",
-  "Omega-3": "omega-3",
-  "Magnesium": "magnesium",
-  "Magnesium glycinate": "magnesium",
-  "Vitamin D3": "vitamin-d",
-  "Vitamin D": "vitamin-d",
-  "Vitamin K2": "vitamin-k2",
-  "Creatine": "creatine",
-  "Creatine monohydrate": "creatine",
-  "Selenium": "selenium",
-  "Vitamin B6": "vitamin-b6",
-  "Iodine": "iodine",
-  "Vitamin B12": "vitamin-b12",
-  "Zinc": "zinc",
-  "Probiotic": "probiotic",
-  "Fibre": "fibre",
-  "Folate": "folate",
-  "CoQ10": "coq10",
-  "Vitamin C": "vitamin-c",
-};
-
+// Use resolveSupplementKey from affiliateLinks (ALIAS_MAP + 4-stage lookup)
+// Wraps it to return null instead of undefined for legacy callers
 function getSupplementKey(name: string): string | null {
-  // Exact match first
-  if (SUPPLEMENT_KEY_MAP[name]) return SUPPLEMENT_KEY_MAP[name];
-  // Partial match
-  for (const [k, v] of Object.entries(SUPPLEMENT_KEY_MAP)) {
-    if (name.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(name.toLowerCase())) return v;
-  }
-  return null;
+  return resolveSupplementKey(name) ?? null;
 }
 
 // ── Supplement card ──
@@ -534,29 +510,22 @@ function ResultsView({ result, answers, onReset }: { result: ProtocolResult; ans
   };
 
   const handleAddAllToIherb = () => {
-    // iHerb doesn't support multicart — open a combined search for all supplements
-    const terms = result.supplements
-      .map(s => {
+    // iHerb has no multicart — open one tab per supplement (matches vitaei.com openAllTabs())
+    const products = result.supplements
+      .flatMap(s => {
         const key = getSupplementKey(s.name);
-        const products = key ? (SUPPLEMENT_PRODUCTS[key] ?? []) : [];
-        return products[0]?.iherbSearchTerm ?? null;
+        return key ? (SUPPLEMENT_PRODUCTS[key] ?? []) : [];
       })
-      .filter((x): x is string => x !== null);
-    if (terms.length === 0) return;
-    // Use the first supplement as the primary search; open each in a single tab
-    const primaryTerm = terms[0];
-    const iherbBase = `https://www.iherb.com/search?kw=${encodeURIComponent(primaryTerm)}`;
-    const encoded = encodeURIComponent(iherbBase);
-    window.open(`https://www.awin1.com/cread.php?awinmid=76736&awinaffid=2873641&ued=${encoded}`, '_blank', 'noopener,noreferrer');
+      .filter(p => p != null);
+    if (products.length === 0) return;
+    buildAllIherbUrls(products).forEach(url => window.open(url, '_blank', 'noopener,noreferrer'));
   };
 
   const handleAddSelectedToIherb = () => {
-    const terms = cartItemsList.map(i => i.product.iherbSearchTerm).filter(Boolean);
-    if (terms.length === 0) { toast.info('Add supplements to cart first'); return; }
-    const primaryTerm = terms[0];
-    const iherbBase = `https://www.iherb.com/search?kw=${encodeURIComponent(primaryTerm)}`;
-    const encoded = encodeURIComponent(iherbBase);
-    window.open(`https://www.awin1.com/cread.php?awinmid=76736&awinaffid=2873641&ued=${encoded}`, '_blank', 'noopener,noreferrer');
+    const products = cartItemsList.map(i => i.product);
+    if (products.length === 0) { toast.info('Add supplements to cart first'); return; }
+    // iHerb has no multicart — open one tab per supplement
+    buildAllIherbUrls(products).forEach(url => window.open(url, '_blank', 'noopener,noreferrer'));
   };
 
   useEffect(() => {
