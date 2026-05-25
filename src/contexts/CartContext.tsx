@@ -27,6 +27,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 const STORAGE_KEY = "di_cart";
 
 function loadCart(): CartItem[] {
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];

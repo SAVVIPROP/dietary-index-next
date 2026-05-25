@@ -33,13 +33,15 @@ const STORAGE_KEY = "di_bookmarks";
 const ReadingListContext = createContext<ReadingListContextValue | null>(null);
 
 export function ReadingListProvider({ children }: { children: ReactNode }) {
-  const [bookmarks, setBookmarks] = useState<BookmarkEntry[]>(() => {
+  const [bookmarks, setBookmarks] = useState<BookmarkEntry[]>([]);
+
+  // Hydrate from localStorage after mount (SSR-safe)
+  useEffect(() => {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    } catch {
-      return [];
-    }
-  });
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) setBookmarks(JSON.parse(stored));
+    } catch { /* noop */ }
+  }, []);
   const [panelOpen, setPanelOpen] = useState(false);
 
   // Sync to localStorage whenever bookmarks change
