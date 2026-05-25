@@ -6,6 +6,7 @@ import {
   ARTICLE_SUPPLEMENT_MAP,
   SUPPLEMENT_PRODUCTS,
   buildAmazonUrl,
+  buildAmazonSearchUrl,
   buildIherbUrl,
   detectRegion,
   countryToRegion,
@@ -127,15 +128,28 @@ export default function AffiliateSupplements({ slug }: Props) {
                     {inCart ? <CheckIcon /> : <CartIcon />}
                     {inCart ? "In cart" : "Add to cart"}
                   </button>
-                  <a
-                    href={amazonUrl}
-                    target="_blank"
-                    rel="noopener noreferrer sponsored"
-                    className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
-                  >
-                    <AmazonIcon />
-                    {regionLabel[region]}
-                  </a>
+                  {amazonUrl ? (
+                    <a
+                      href={amazonUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
+                    >
+                      <AmazonIcon />
+                      {regionLabel[region]}
+                    </a>
+                  ) : (
+                    <a
+                      href={buildAmazonSearchUrl(product, region)}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      title="No direct listing — searching Amazon"
+                      className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap opacity-70"
+                    >
+                      <AmazonIcon />
+                      Search
+                    </a>
+                  )}
                   <a
                     href={iherbUrl}
                     target="_blank"

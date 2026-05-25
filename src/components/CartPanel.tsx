@@ -5,8 +5,10 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useCart } from "@/contexts/CartContext";
 import {
   buildAmazonUrl,
+  buildAmazonSearchUrl,
   buildAmazonMulticartUrl,
   buildIherbUrl,
+  partitionBasket,
   detectRegion,
   countryToRegion,
   type AffiliateRegion,
@@ -104,8 +106,17 @@ export default function CartPanel() {
 
   const handleAmazonAll = () => {
     const products = items.map(i => i.product);
-    const url = buildAmazonMulticartUrl(products, region);
-    window.open(url, "_blank", "noopener,noreferrer");
+    const { withAsin, withoutAsin } = partitionBasket(products, region);
+    // Items with region-specific ASINs → multicart URL
+    if (withAsin.length > 0) {
+      const url = buildAmazonMulticartUrl(withAsin, region);
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+    // Items without region ASINs → individual Amazon search tabs (fallback)
+    withoutAsin.forEach(product => {
+      const searchUrl = buildAmazonSearchUrl(product, region);
+      window.open(searchUrl, "_blank", "noopener,noreferrer");
+    });
   };
 
   const handleIherbAll = () => {
@@ -190,15 +201,28 @@ export default function CartPanel() {
                     <p className="text-[11px] text-muted-foreground leading-relaxed">{product.note}</p>
                     {/* Buy buttons */}
                     <div className="flex gap-2">
-                      <a
-                        href={amazonUrl}
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
-                      >
-                        <AmazonIcon />
-                        {regionLabel[region]}
-                      </a>
+                      {amazonUrl ? (
+                        <a
+                          href={amazonUrl}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
+                        >
+                          <AmazonIcon />
+                          {regionLabel[region]}
+                        </a>
+                      ) : (
+                        <a
+                          href={buildAmazonSearchUrl(product, region)}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          title="No direct listing — searching Amazon"
+                          className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap opacity-70"
+                        >
+                          <AmazonIcon />
+                          Search
+                        </a>
+                      )}
                       <a
                         href={iherbUrl}
                         target="_blank"

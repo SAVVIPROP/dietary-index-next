@@ -19,8 +19,11 @@ import { toast } from "sonner";
 import {
   SUPPLEMENT_PRODUCTS,
   buildAmazonUrl,
+  buildAmazonSearchUrl,
   buildAmazonMulticartUrl,
   buildIherbUrl,
+  partitionBasket,
+  getAsinForRegion,
   detectRegion,
   countryToRegion,
   type AffiliateRegion,
@@ -342,6 +345,7 @@ function SupplementCard({
   const products = key ? (SUPPLEMENT_PRODUCTS[key] ?? []) : [];
   const product = products[0] ?? null;
   const amazonUrl = product ? buildAmazonUrl(product, region) : null;
+  const amazonSearchUrl = product ? buildAmazonSearchUrl(product, region) : null;
   const iherbUrl = product ? buildIherbUrl(product) : null;
   const regionLabel: Record<AffiliateRegion, string> = { US: "Amazon US", UK: "Amazon UK", DE: "Amazon DE", default: "Amazon" };
 
@@ -370,9 +374,9 @@ function SupplementCard({
       {supplement.note && (
         <p className="text-[11px] text-[oklch(0.60_0.10_72)] mt-1.5 border-t border-border pt-1.5">⚠ {supplement.note}</p>
       )}
-      {(amazonUrl || iherbUrl) && (
+      {(amazonUrl || amazonSearchUrl || iherbUrl) && (
         <div className="flex gap-2 mt-3 pt-2 border-t border-border/50">
-          {amazonUrl && (
+          {amazonUrl ? (
             <a
               href={amazonUrl}
               target="_blank"
@@ -381,7 +385,17 @@ function SupplementCard({
             >
               {regionLabel[region]}
             </a>
-          )}
+          ) : amazonSearchUrl ? (
+            <a
+              href={amazonSearchUrl}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              title="No direct listing — searching Amazon"
+              className="btn-amazon flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-mono tracking-wider uppercase transition-all opacity-70"
+            >
+              Search
+            </a>
+          ) : null}
           {iherbUrl && (
             <a
               href={iherbUrl}
@@ -488,23 +502,35 @@ function ResultsView({ result, answers, onReset }: { result: ProtocolResult; ans
   };
 
   const handleAddAllToAmazon = () => {
-    const items = result.supplements
-      .map(s => {
+    const products = result.supplements
+      .flatMap(s => {
         const key = getSupplementKey(s.name);
-        const products = key ? (SUPPLEMENT_PRODUCTS[key] ?? []) : [];
-        return products[0] ? { asin: products[0].asin } : null;
+        return key ? (SUPPLEMENT_PRODUCTS[key] ?? []) : [];
       })
-      .filter((x): x is { asin: string } => x !== null);
-    if (items.length === 0) return;
-    const url = buildAmazonMulticartUrl(items, region);
-    window.open(url, '_blank', 'noopener,noreferrer');
+      .filter(p => p != null);
+    if (products.length === 0) return;
+    const { withAsin, withoutAsin } = partitionBasket(products, region);
+    if (withAsin.length > 0) {
+      const url = buildAmazonMulticartUrl(withAsin, region);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    // Fallback: open search tabs for items without region ASINs
+    withoutAsin.forEach(product => {
+      window.open(buildAmazonSearchUrl(product, region), '_blank', 'noopener,noreferrer');
+    });
   };
 
   const handleAddSelectedToAmazon = () => {
-    const items = cartItemsList.map(i => ({ asin: i.product.asin }));
-    if (items.length === 0) { toast.info('Add supplements to cart first'); return; }
-    const url = buildAmazonMulticartUrl(items, region);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const products = cartItemsList.map(i => i.product);
+    if (products.length === 0) { toast.info('Add supplements to cart first'); return; }
+    const { withAsin, withoutAsin } = partitionBasket(products, region);
+    if (withAsin.length > 0) {
+      const url = buildAmazonMulticartUrl(withAsin, region);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    withoutAsin.forEach(product => {
+      window.open(buildAmazonSearchUrl(product, region), '_blank', 'noopener,noreferrer');
+    });
   };
 
   const handleAddAllToIherb = () => {

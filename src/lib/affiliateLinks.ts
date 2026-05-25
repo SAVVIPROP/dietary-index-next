@@ -664,10 +664,18 @@ export const ARTICLE_SUPPLEMENT_MAP: Record<string, string[]> = {
 };
 
 // Map ISO 3166-1 alpha-2 country code -> affiliate region
+// Matches vitaei.com pickAmazonRegion() routing table exactly
 export function countryToRegion(country: string): AffiliateRegion {
   const c = country.toUpperCase();
-  if (['DE', 'AT', 'CH', 'LU', 'LI'].includes(c)) return 'DE';
+  // UK region: Great Britain + Ireland
   if (['GB', 'IE'].includes(c)) return 'UK';
+  // DE region: DACH + broader Europe (routes to amazon.de)
+  if ([
+    'DE', 'AT', 'CH', 'FR', 'IT', 'ES', 'NL', 'BE', 'LU',
+    'PL', 'SE', 'NO', 'DK', 'FI', 'PT', 'GR', 'CZ', 'SK', 'HU',
+    'LI', 'RO', 'BG', 'HR', 'SI', 'EE', 'LV', 'LT',
+  ].includes(c)) return 'DE';
+  // All others → US (amazon.com)
   return 'US';
 }
 
@@ -685,18 +693,54 @@ export function detectRegion(): AffiliateRegion {
   }
 }
 
-// Build Amazon single-product URL with ASIN (direct product page)
-// Uses region-specific ASIN if available, falls back to US ASIN
-export function buildAmazonUrl(product: SupplementEntry, region: AffiliateRegion): string {
+// Resolve the correct ASIN for a given region.
+// Matches vitaei.com getAsinForRegion() — NO cross-region fallback for non-US regions.
+// Using a US ASIN on amazon.co.uk would add the wrong product (or nothing) to the cart.
+export function getAsinForRegion(product: SupplementEntry, region: AffiliateRegion): string | undefined {
+  if (region === 'UK') return product.asinUK;   // undefined if no UK ASIN
+  if (region === 'DE') return product.asinDE;   // undefined if no DE ASIN
+  // US / default: prefer explicit US ASIN, fall back to flat asin field
+  return product.asin || undefined;
+}
+
+// Build Amazon single-product URL with ASIN (direct product page).
+// Returns undefined if no region-specific ASIN exists (caller should use search fallback).
+export function buildAmazonUrl(product: SupplementEntry, region: AffiliateRegion): string | undefined {
+  const asin = getAsinForRegion(product, region);
+  if (!asin) return undefined;
   const { host, tag } = AMAZON_RETAILERS[region];
-  const asin = (region === 'UK' && product.asinUK) ? product.asinUK
-    : (region === 'DE' && product.asinDE) ? product.asinDE
-    : product.asin;
   return `https://${host}/dp/${asin}?tag=${tag}`;
 }
 
-// Build Amazon multicart URL for multiple items — matches vitaei.com exactly
-// Format: https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=xxx&Quantity.1=1&AssociateTag=ref-idx-20
+// Build Amazon search URL for a product name (fallback when no ASIN exists for region)
+export function buildAmazonSearchUrl(product: SupplementEntry, region: AffiliateRegion): string {
+  const { host, tag } = AMAZON_RETAILERS[region];
+  const q = encodeURIComponent(product.name);
+  return `https://${host}/s?k=${q}&tag=${tag}`;
+}
+
+// Partition basket items into those with a region ASIN (→ multicart) and those without (→ search tabs).
+// Matches vitaei.com partitionBasket() exactly.
+export function partitionBasket(
+  items: SupplementEntry[],
+  region: AffiliateRegion
+): { withAsin: Array<{ product: SupplementEntry; asin: string }>; withoutAsin: SupplementEntry[] } {
+  const withAsin: Array<{ product: SupplementEntry; asin: string }> = [];
+  const withoutAsin: SupplementEntry[] = [];
+  for (const product of items) {
+    const asin = getAsinForRegion(product, region);
+    if (asin) {
+      withAsin.push({ product, asin });
+    } else {
+      withoutAsin.push(product);
+    }
+  }
+  return { withAsin, withoutAsin };
+}
+
+// Build Amazon multicart URL from pre-resolved ASINs — matches vitaei.com exactly.
+// Caller must pass only items that have a valid ASIN for the region (use partitionBasket first).
+// Format: https://www.amazon.co.uk/gp/aws/cart/add.html?ASIN.1=xxx&Quantity.1=1&AssociateTag=ukv08-21
 export function buildAmazonMulticartUrl(
   items: Array<{ asin: string; quantity?: number }>,
   region: AffiliateRegion
