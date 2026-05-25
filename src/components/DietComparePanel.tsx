@@ -22,8 +22,8 @@ const STRENGTH_COLORS = ["var(--border)", "var(--tier-iii)", "var(--tier-ii)", "
 
 function TierPill({ tier }: { tier: EvidenceTier }) {
   const styles: Record<string, string> = {
-    I: "border-emerald-700 text-emerald-700",
-    II: "border-amber-600 text-amber-600",
+    I: "border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)]",
+    II: "border-[oklch(0.60_0.10_72)] text-[oklch(0.60_0.10_72)]",
     III: "border-slate-400 text-slate-400",
   };
   return (
@@ -327,7 +327,7 @@ export default function DietComparePanel({ onClose }: DietComparePanelProps) {
                       return (
                         <div
                           key={diet.id}
-                          className={`${colWidth} px-4 py-3 border-r border-border last:border-r-0 ${isBest ? "bg-emerald-50/40" : ""}`}
+                          className={`${colWidth} px-4 py-3 border-r border-border last:border-r-0 ${isBest ? "bg-[oklch(0.95_0.04_152)]/40" : ""}`}
                         >
                           <StrengthDots strength={strength} />
                         </div>
@@ -381,7 +381,7 @@ export default function DietComparePanel({ onClose }: DietComparePanelProps) {
         {/* Footer */}
         <div className="px-5 py-3 border-t border-border shrink-0 flex items-center justify-between gap-3 bg-muted/10">
           <p className="text-[10px] font-mono text-muted-foreground">
-            Evidence strength: <span className="text-foreground">Strong = multiple RCTs</span> · <span className="text-amber-600">Moderate = human trials</span> · <span className="text-muted-foreground">Weak = mechanistic</span>
+            Evidence strength: <span className="text-foreground">Strong = multiple RCTs</span> · <span className="text-[oklch(0.60_0.10_72)]">Moderate = human trials</span> · <span className="text-muted-foreground">Weak = mechanistic</span>
           </p>
           <button
             onClick={onClose}

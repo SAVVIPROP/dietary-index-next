@@ -663,7 +663,16 @@ export const ARTICLE_SUPPLEMENT_MAP: Record<string, string[]> = {
 
 };
 
-// Detect user region from browser locale / timezone
+// Map ISO 3166-1 alpha-2 country code -> affiliate region
+export function countryToRegion(country: string): AffiliateRegion {
+  const c = country.toUpperCase();
+  if (['DE', 'AT', 'CH', 'LU', 'LI'].includes(c)) return 'DE';
+  if (['GB', 'IE'].includes(c)) return 'UK';
+  return 'US';
+}
+
+// Detect user region from browser locale / timezone (client-side fallback)
+// For accurate detection, call /api/geo and use countryToRegion()
 export function detectRegion(): AffiliateRegion {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';

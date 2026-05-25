@@ -8,6 +8,7 @@ import {
   buildAmazonUrl,
   buildIherbUrl,
   detectRegion,
+  countryToRegion,
   type AffiliateRegion,
 } from '@/lib/affiliateLinks';
 import { useCart } from '@/contexts/CartContext';
@@ -43,11 +44,17 @@ const CheckIcon = () => (
 );
 
 export default function AffiliateSupplements({ slug }: Props) {
-  const [region, setRegion] = useState<AffiliateRegion>('US');
+  const [region, setRegion] = useState<AffiliateRegion>(() => detectRegion());
   const { addItem, removeItem, hasItem, openCart } = useCart();
 
+  // Upgrade to accurate IP geolocation from Vercel edge headers
   useEffect(() => {
-    setRegion(detectRegion());
+    fetch('/api/geo')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.country) setRegion(countryToRegion(data.country));
+      })
+      .catch(() => {/* keep detectRegion() fallback */});
   }, []);
 
   const supplementKeys = ARTICLE_SUPPLEMENT_MAP[slug];
@@ -124,7 +131,7 @@ export default function AffiliateSupplements({ slug }: Props) {
                     href={amazonUrl}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase border border-border hover:border-foreground/40 text-foreground hover:bg-muted/30 transition-all whitespace-nowrap"
+                    className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
                   >
                     <AmazonIcon />
                     {regionLabel[region]}
@@ -133,7 +140,7 @@ export default function AffiliateSupplements({ slug }: Props) {
                     href={iherbUrl}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase border border-border hover:border-foreground/40 text-foreground hover:bg-muted/30 transition-all whitespace-nowrap"
+                    className="btn-iherb flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
                   >
                     <IherbIcon />
                     iHerb

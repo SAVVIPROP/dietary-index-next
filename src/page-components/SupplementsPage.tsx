@@ -37,14 +37,14 @@ const EVIDENCE_TIERS = [
   {
     tier: "I",
     label: "Strong evidence",
-    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    color: "text-[oklch(0.42_0.07_152)] bg-[oklch(0.95_0.04_152)] border-[oklch(0.85_0.05_152)]",
     supplements: ["Omega-3 DHA/EPA", "Vitamin D3", "Creatine monohydrate", "Magnesium glycinate"],
     note: "Supported by multiple large RCTs with consistent results",
   },
   {
     tier: "II",
     label: "Moderate evidence",
-    color: "text-amber-700 bg-amber-50 border-amber-200",
+    color: "text-amber-700 bg-[oklch(0.96_0.04_78)] border-[oklch(0.85_0.06_75)]",
     supplements: ["Berberine", "Ashwagandha", "Vitamin K2", "Collagen peptides", "Zinc"],
     note: "Supported by smaller RCTs or strong mechanistic evidence",
   },
@@ -58,8 +58,8 @@ const EVIDENCE_TIERS = [
 ];
 
 const TIER_COLORS: Record<string, string> = {
-  I: "text-emerald-700 bg-emerald-50 border-emerald-200",
-  II: "text-amber-700 bg-amber-50 border-amber-200",
+  I: "text-[oklch(0.42_0.07_152)] bg-[oklch(0.95_0.04_152)] border-[oklch(0.85_0.05_152)]",
+  II: "text-amber-700 bg-[oklch(0.96_0.04_78)] border-[oklch(0.85_0.06_75)]",
   III: "text-slate-600 bg-slate-50 border-slate-200",
 };
 
@@ -163,10 +163,10 @@ export default function SupplementsPage() {
 
       {/* Warning callout */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="flex items-start gap-3 p-4 border border-amber-200 bg-amber-50 rounded-lg">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 border border-[oklch(0.85_0.06_75)] bg-[oklch(0.96_0.04_78)] rounded-lg">
+          <AlertTriangle className="w-4 h-4 text-[oklch(0.60_0.10_72)] shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-amber-800 mb-1">Important: Food first, supplements second</p>
+            <p className="text-sm font-semibold text-[oklch(0.44_0.08_68)] mb-1">Important: Food first, supplements second</p>
             <p className="text-sm text-amber-700 leading-relaxed">
               No supplement replaces a nutrient-dense diet. The evidence for whole-food dietary patterns (Mediterranean, DASH, MIND) consistently outperforms isolated supplement interventions. Supplements are most useful for correcting documented deficiencies — not for optimising an already adequate diet.
             </p>
@@ -228,14 +228,14 @@ export default function SupplementsPage() {
                     </span>
                     <span className={`text-xs font-mono px-2 py-0.5 rounded ${
                       article.verdictShort === "Myth" ? "bg-red-50 text-red-700" :
-                      article.verdictShort === "Mostly True" ? "bg-emerald-50 text-emerald-700" :
+                      article.verdictShort === "Mostly True" ? "bg-[oklch(0.95_0.04_152)] text-[oklch(0.42_0.07_152)]" :
                       "bg-stone-100 text-stone-600"
                     }`}>
                       {article.verdictShort}
                     </span>
                   </div>
                 </div>
-                <h3 className="font-display font-semibold text-stone-900 leading-snug mb-2 group-hover:text-emerald-800 transition-colors">
+                <h3 className="font-display font-semibold text-stone-900 leading-snug mb-2 group-hover:text-[oklch(0.36_0.07_152)] transition-colors">
                   {article.title}
                 </h3>
                 <p className="text-sm text-stone-500 leading-relaxed line-clamp-2">{article.intro}</p>

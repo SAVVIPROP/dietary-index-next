@@ -121,8 +121,8 @@ const TIER_I_DIETS = [
 // ── Evidence tier pill ──
 function TierPill({ tier }: { tier: "I" | "II" | "III" }) {
   const styles: Record<string, string> = {
-    I: "border-emerald-700 text-emerald-700",
-    II: "border-amber-600 text-amber-600",
+    I: "border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)]",
+    II: "border-[oklch(0.60_0.10_72)] text-[oklch(0.60_0.10_72)]",
     III: "border-slate-400 text-slate-400",
   };
   return (
@@ -135,11 +135,11 @@ function TierPill({ tier }: { tier: "I" | "II" | "III" }) {
 // ── Verdict badge ──
 function VerdictBadge({ verdict }: { verdict: string }) {
   const styles: Record<string, string> = {
-    "Supported": "bg-emerald-50 text-emerald-800 border-emerald-200",
+    "Supported": "bg-[oklch(0.95_0.04_152)] text-[oklch(0.36_0.07_152)] border-[oklch(0.85_0.05_152)]",
     "Largely Refuted": "bg-red-50 text-red-800 border-red-200",
     "Refuted": "bg-red-50 text-red-800 border-red-200",
     "Context-Dependent": "bg-blue-50 text-blue-800 border-blue-200",
-    "Partly Supported": "bg-amber-50 text-amber-800 border-amber-200",
+    "Partly Supported": "bg-[oklch(0.96_0.04_78)] text-[oklch(0.44_0.08_68)] border-[oklch(0.85_0.06_75)]",
   };
   const cls = styles[verdict] || "bg-slate-50 text-slate-700 border-slate-200";
   return (
@@ -321,7 +321,7 @@ export default function HeartHealthPage() {
                         {diet.name}
                       </h3>
                       <div className="flex items-start gap-2 mb-3">
-                        <CheckCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-700" />
+                        <CheckCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[oklch(0.42_0.07_152)]" />
                         <span className="text-[13px] font-medium text-foreground">{diet.keyBenefit}</span>
                       </div>
                       <p className="text-[12px] text-muted-foreground leading-relaxed mb-3">{diet.mechanism}</p>
@@ -452,7 +452,7 @@ export default function HeartHealthPage() {
                   {activeArticle === article.slug && (
                     <div className="px-4 sm:px-5 pb-4 border-t border-border bg-muted/10">
                       <div className="pt-4 max-w-2xl">
-                        <div className="border-l-2 border-emerald-700 pl-4 mb-4">
+                        <div className="border-l-2 border-[oklch(0.42_0.07_152)] pl-4 mb-4">
                           <div className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground mb-1">Key Finding</div>
                           <p className="text-[13px] text-foreground leading-relaxed">{article.keyFinding}</p>
                         </div>

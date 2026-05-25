@@ -59,8 +59,8 @@ const KEY_FINDINGS = [
 ];
 
 const TIER_COLORS: Record<string, string> = {
-  I: "text-emerald-700 bg-emerald-50 border-emerald-200",
-  II: "text-amber-700 bg-amber-50 border-amber-200",
+  I: "text-[oklch(0.42_0.07_152)] bg-[oklch(0.95_0.04_152)] border-[oklch(0.85_0.05_152)]",
+  II: "text-amber-700 bg-[oklch(0.96_0.04_78)] border-[oklch(0.85_0.06_75)]",
   III: "text-slate-600 bg-slate-50 border-slate-200",
 };
 
@@ -211,14 +211,14 @@ export default function BrainHealthPage() {
                     </span>
                     <span className={`text-xs font-mono px-2 py-0.5 rounded ${
                       article.verdictShort === "Myth" ? "bg-red-50 text-red-700" :
-                      article.verdictShort === "Mostly True" ? "bg-emerald-50 text-emerald-700" :
+                      article.verdictShort === "Mostly True" ? "bg-[oklch(0.95_0.04_152)] text-[oklch(0.42_0.07_152)]" :
                       "bg-stone-100 text-stone-600"
                     }`}>
                       {article.verdictShort}
                     </span>
                   </div>
                 </div>
-                <h3 className="font-display font-semibold text-stone-900 leading-snug mb-2 group-hover:text-emerald-800 transition-colors">
+                <h3 className="font-display font-semibold text-stone-900 leading-snug mb-2 group-hover:text-[oklch(0.36_0.07_152)] transition-colors">
                   {article.title}
                 </h3>
                 <p className="text-sm text-stone-500 leading-relaxed line-clamp-2">{article.intro}</p>

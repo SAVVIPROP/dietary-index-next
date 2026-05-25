@@ -224,8 +224,8 @@ export default function GutHealthPage() {
                       <div className="flex items-center gap-3 mt-2">
                         <span className={`text-xs font-mono px-2 py-0.5 rounded-full ${
                           article.verdictShort === "Myth" || article.verdictShort === "Mostly Myth" ? "bg-red-50 text-red-600" :
-                          article.verdictShort === "Mostly True" || article.verdictShort === "True" ? "bg-green-50 text-green-700" :
-                          "bg-amber-50 text-amber-700"
+                          article.verdictShort === "Mostly True" || article.verdictShort === "True" ? "bg-[oklch(0.95_0.04_152)] text-[oklch(0.42_0.07_152)]" :
+                          "bg-[oklch(0.96_0.04_78)] text-amber-700"
                         }`}>
                           {article.verdictShort}
                         </span>

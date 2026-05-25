@@ -8,6 +8,7 @@ import {
   buildAmazonMulticartUrl,
   buildIherbUrl,
   detectRegion,
+  countryToRegion,
   type AffiliateRegion,
 } from "@/lib/affiliateLinks";
 
@@ -57,9 +58,17 @@ const CheckSmallIcon = () => (
 
 export default function CartPanel() {
   const { items, count, removeItem, clearCart, isOpen, closeCart } = useCart();
-  const [region] = useState<AffiliateRegion>(() => detectRegion());
+  const [region, setRegion] = useState<AffiliateRegion>(() => detectRegion());
   const panelRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
+
+  // Accurate IP geolocation via Vercel edge headers
+  useEffect(() => {
+    fetch('/api/geo')
+      .then((r) => r.json())
+      .then((data) => { if (data?.country) setRegion(countryToRegion(data.country)); })
+      .catch(() => {});
+  }, []);
 
   const handleShareCart = useCallback(() => {
     const keys = items.map(i => i.key).join(",");
@@ -185,7 +194,7 @@ export default function CartPanel() {
                         href={amazonUrl}
                         target="_blank"
                         rel="noopener noreferrer sponsored"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase border border-border hover:border-foreground/40 text-foreground hover:bg-muted/30 transition-all whitespace-nowrap"
+                        className="btn-amazon flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
                       >
                         <AmazonIcon />
                         {regionLabel[region]}
@@ -194,7 +203,7 @@ export default function CartPanel() {
                         href={iherbUrl}
                         target="_blank"
                         rel="noopener noreferrer sponsored"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase border border-border hover:border-foreground/40 text-foreground hover:bg-muted/30 transition-all whitespace-nowrap"
+                        className="btn-iherb flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
                       >
                         <IherbIcon />
                         iHerb
@@ -214,14 +223,14 @@ export default function CartPanel() {
             <div className="flex gap-2">
               <button
                 onClick={handleAmazonAll}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase bg-foreground text-background hover:bg-foreground/90 transition-colors whitespace-nowrap"
+                className="btn-amazon flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
               >
                 <AmazonIcon />
                 Add all to {regionLabel[region]}
               </button>
               <button
                 onClick={handleIherbAll}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase border border-border hover:border-foreground/40 text-foreground hover:bg-muted/30 transition-all whitespace-nowrap"
+                className="btn-iherb flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-mono tracking-wider uppercase rounded transition-all whitespace-nowrap"
               >
                 <IherbIcon />
                 Add all to iHerb

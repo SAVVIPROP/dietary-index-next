@@ -126,8 +126,8 @@ const POWER_9 = [
 
 function TierPill({ tier }: { tier: "I" | "II" | "III" }) {
   const styles: Record<string, string> = {
-    I: "border-emerald-700 text-emerald-700",
-    II: "border-amber-600 text-amber-600",
+    I: "border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)]",
+    II: "border-[oklch(0.60_0.10_72)] text-[oklch(0.60_0.10_72)]",
     III: "border-slate-400 text-slate-400",
   };
   return (
@@ -193,8 +193,8 @@ export default function LongevityPage() {
               <div className="flex items-center gap-2 mb-4 flex-wrap">
                 <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">Collection</span>
                 <span className="text-[10px] font-mono text-muted-foreground/30">—</span>
-                <span className="text-[9px] font-mono tracking-widest uppercase border border-emerald-700 text-emerald-700 px-1.5 py-0.5">Blue Zones</span>
-                <span className="text-[9px] font-mono tracking-widest uppercase border border-amber-600 text-amber-600 px-1.5 py-0.5">Longevity Science</span>
+                <span className="text-[9px] font-mono tracking-widest uppercase border border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)] px-1.5 py-0.5">Blue Zones</span>
+                <span className="text-[9px] font-mono tracking-widest uppercase border border-[oklch(0.60_0.10_72)] text-[oklch(0.60_0.10_72)] px-1.5 py-0.5">Longevity Science</span>
               </div>
 
               <h1
@@ -287,7 +287,7 @@ export default function LongevityPage() {
                       <div style={{ fontFamily: "var(--font-display)" }} className="text-[16px] text-foreground">{zone.name}</div>
                       <div className="text-[10px] font-mono text-muted-foreground">{zone.country}</div>
                     </div>
-                    <span className="text-[9px] font-mono tracking-widest uppercase border border-emerald-700 text-emerald-700 px-1.5 py-0.5 shrink-0">Blue Zone</span>
+                    <span className="text-[9px] font-mono tracking-widest uppercase border border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)] px-1.5 py-0.5 shrink-0">Blue Zone</span>
                   </div>
                   <div className="text-[11px] text-muted-foreground mb-3">{zone.centenarians}</div>
                   <Link
@@ -391,7 +391,7 @@ export default function LongevityPage() {
                   {activeArticle === article.slug && (
                     <div className="px-4 sm:px-5 pb-4 border-t border-border bg-muted/10">
                       <div className="pt-4 max-w-2xl">
-                        <div className="border-l-2 border-emerald-700 pl-4 mb-4">
+                        <div className="border-l-2 border-[oklch(0.42_0.07_152)] pl-4 mb-4">
                           <div className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground mb-1">Key Finding</div>
                           <p className="text-[13px] text-foreground leading-relaxed">{article.keyFinding}</p>
                         </div>

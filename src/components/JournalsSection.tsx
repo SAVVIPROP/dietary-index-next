@@ -622,12 +622,12 @@ export default function JournalsSection({ initialVerdictFilter = "", initialSour
                       ? isNewTab
                         ? "border-[var(--tier-i)] bg-[var(--tier-i)] text-white"
                         : isQuickTab
-                        ? "border-amber-600 bg-amber-600 text-white"
+                        ? "border-[oklch(0.60_0.10_72)] bg-amber-600 text-white"
                         : "border-foreground bg-foreground text-background"
                       : isNewTab
                       ? "border-[var(--tier-i)]/40 text-[var(--tier-i)] hover:border-[var(--tier-i)] hover:bg-[var(--tier-i)]/5"
                       : isQuickTab
-                      ? "border-amber-600/30 text-amber-700 dark:text-amber-500 hover:border-amber-600/60 hover:bg-amber-600/5"
+                      ? "border-[oklch(0.60_0.10_72)]/30 text-amber-700 dark:text-[oklch(0.65_0.10_72)] hover:border-[oklch(0.60_0.10_72)]/60 hover:bg-[oklch(0.76_0.09_72)]/5"
                       : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
                   }`}
                 >

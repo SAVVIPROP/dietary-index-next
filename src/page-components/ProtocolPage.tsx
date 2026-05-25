@@ -22,6 +22,7 @@ import {
   buildAmazonMulticartUrl,
   buildIherbUrl,
   detectRegion,
+  countryToRegion,
   type AffiliateRegion,
 } from "@/lib/affiliateLinks";
 
@@ -152,8 +153,8 @@ function MultiOption({
 // ── Tier pill ──
 function TierPill({ tier }: { tier: "I" | "II" | "III" }) {
   const colors: Record<string, string> = {
-    I: "border-emerald-700 text-emerald-700",
-    II: "border-amber-600 text-amber-600",
+    I: "border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)]",
+    II: "border-[oklch(0.60_0.10_72)] text-[oklch(0.60_0.10_72)]",
     III: "border-slate-400 text-slate-400",
   };
   return (
@@ -212,7 +213,7 @@ function PrimaryDietCard({ diet }: { diet: ProtocolResult["primaryDiet"] }) {
       <div className="space-y-1.5 mb-4">
         {diet.keyBenefits.map((b, i) => (
           <div key={i} className="flex items-start gap-2 text-[12px] text-foreground/80">
-            <CheckCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-700" />
+            <CheckCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[oklch(0.42_0.07_152)]" />
             <span>{b}</span>
           </div>
         ))}
@@ -260,7 +261,7 @@ function SupportingDietCard({ diet, index }: { diet: ProtocolResult["supportingD
           <div className="space-y-1">
             {diet.keyBenefits.slice(0, 2).map((b, i) => (
               <div key={i} className="flex items-start gap-2 text-[11px] text-foreground/70">
-                <CheckCircle className="w-3 h-3 shrink-0 mt-0.5 text-emerald-700" />
+                <CheckCircle className="w-3 h-3 shrink-0 mt-0.5 text-[oklch(0.42_0.07_152)]" />
                 <span>{b}</span>
               </div>
             ))}
@@ -283,7 +284,7 @@ function PriorityCard({ priority }: { priority: ProtocolResult["keyPriorities"][
       <div className="flex items-start justify-between gap-2 mb-1">
         <span className="text-[13px] font-medium text-foreground">{priority.label}</span>
         <span className={`text-[9px] font-mono uppercase tracking-wider shrink-0 mt-0.5 ${
-          priority.urgency === "high" ? "text-red-500" : priority.urgency === "medium" ? "text-amber-500" : "text-emerald-600"
+          priority.urgency === "high" ? "text-red-500" : priority.urgency === "medium" ? "text-[oklch(0.65_0.10_72)]" : "text-emerald-600"
         }`}>{priority.urgency}</span>
       </div>
       <p className="text-[12px] text-muted-foreground leading-relaxed mb-1.5">{priority.description}</p>
@@ -346,7 +347,7 @@ function SupplementCard({
 
   return (
     <div className={`border px-4 py-3 transition-all duration-200 ${
-      inCart ? "border-green-400 bg-green-50/50" : "border-border"
+      inCart ? "border-[oklch(0.72_0.08_152)] bg-[oklch(0.95_0.04_152/0.5)]" : "border-border"
     }`}>
       <div className="flex items-start justify-between gap-2 mb-1">
         <span className="text-[13px] font-medium text-foreground">{supplement.name}</span>
@@ -356,7 +357,7 @@ function SupplementCard({
             onClick={onToggleCart}
             className={`text-[10px] font-semibold px-2 py-1 rounded transition-all duration-150 border ${
               inCart
-                ? "bg-green-100 border-green-300 text-green-700 hover:bg-green-200"
+                ? "bg-[oklch(0.92_0.05_152)] border-[oklch(0.80_0.06_152)] text-[oklch(0.42_0.07_152)] hover:bg-[oklch(0.88_0.06_152)]"
                 : "bg-muted border-border text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
@@ -367,7 +368,7 @@ function SupplementCard({
       <div className="text-[10px] font-mono text-muted-foreground mb-1.5">{supplement.dose}</div>
       <p className="text-[12px] text-muted-foreground leading-relaxed">{supplement.rationale}</p>
       {supplement.note && (
-        <p className="text-[11px] text-amber-600 mt-1.5 border-t border-border pt-1.5">⚠ {supplement.note}</p>
+        <p className="text-[11px] text-[oklch(0.60_0.10_72)] mt-1.5 border-t border-border pt-1.5">⚠ {supplement.note}</p>
       )}
       {(amazonUrl || iherbUrl) && (
         <div className="flex gap-2 mt-3 pt-2 border-t border-border/50">
@@ -376,7 +377,7 @@ function SupplementCard({
               href={amazonUrl}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              className="flex items-center gap-1 px-2.5 py-1 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-semibold hover:bg-amber-100 transition-colors"
+              className="btn-amazon flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-mono tracking-wider uppercase transition-all"
             >
               {regionLabel[region]}
             </a>
@@ -386,7 +387,7 @@ function SupplementCard({
               href={iherbUrl}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              className="flex items-center gap-1 px-2.5 py-1 rounded bg-green-50 border border-green-200 text-green-800 text-[10px] font-semibold hover:bg-green-100 transition-colors"
+              className="btn-iherb flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-mono tracking-wider uppercase transition-all"
             >
               iHerb
             </a>
@@ -462,8 +463,16 @@ function ResultsView({ result, answers, onReset }: { result: ProtocolResult; ans
   const { addBookmark } = useReadingList();
   const topRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
-  const [region] = useState<AffiliateRegion>(() => detectRegion());
+  const [region, setRegion] = useState<AffiliateRegion>(() => detectRegion());
   const { addItem, removeItem, hasItem, openCart: openCartPanel, count: cartCount, items: cartItemsList } = useCart();
+
+  // Accurate IP geolocation via Vercel edge headers
+  useEffect(() => {
+    fetch('/api/geo')
+      .then((r) => r.json())
+      .then((data) => { if (data?.country) setRegion(countryToRegion(data.country)); })
+      .catch(() => {});
+  }, []);
 
   const toggleCart = (supplementName: string) => {
     const key = getSupplementKey(supplementName);
@@ -704,14 +713,14 @@ function ResultsView({ result, answers, onReset }: { result: ProtocolResult; ans
                   {/* Amazon */}
                   <button
                     onClick={handleAddAllToAmazon}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-semibold rounded transition-colors"
+                    className="btn-amazon flex items-center gap-1.5 px-3 py-2 text-[11px] font-mono tracking-wider uppercase rounded transition-all"
                   >
                     Add all to Amazon
                   </button>
                   {cartCount > 0 && (
                     <button
                       onClick={handleAddSelectedToAmazon}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 text-[11px] font-semibold rounded transition-colors"
+                      className="btn-amazon flex items-center gap-1.5 px-3 py-2 text-[11px] font-mono tracking-wider uppercase rounded transition-all"
                     >
                       Add selected ({cartCount}) to Amazon
                     </button>
@@ -719,14 +728,14 @@ function ResultsView({ result, answers, onReset }: { result: ProtocolResult; ans
                   {/* iHerb */}
                   <button
                     onClick={handleAddAllToIherb}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold rounded transition-colors"
+                    className="btn-iherb flex items-center gap-1.5 px-3 py-2 text-[11px] font-mono tracking-wider uppercase rounded transition-all"
                   >
                     Add all to iHerb
                   </button>
                   {cartCount > 0 && (
                     <button
                       onClick={handleAddSelectedToIherb}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-semibold rounded transition-colors"
+                      className="btn-iherb flex items-center gap-1.5 px-3 py-2 text-[11px] font-mono tracking-wider uppercase rounded transition-all"
                     >
                       Add selected ({cartCount}) to iHerb
                     </button>
@@ -758,7 +767,7 @@ function ResultsView({ result, answers, onReset }: { result: ProtocolResult; ans
             onClick={handleCopyLink}
             className={`flex items-center gap-2 text-[11px] font-mono tracking-wider uppercase border px-3 py-2 transition-all ${
               copied
-                ? "border-emerald-700 text-emerald-700 bg-emerald-50"
+                ? "border-[oklch(0.42_0.07_152)] text-[oklch(0.42_0.07_152)] bg-[oklch(0.95_0.04_152)]"
                 : "border-foreground bg-foreground text-background hover:bg-foreground/90"
             }`}
           >

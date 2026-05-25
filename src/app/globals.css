@@ -1,7 +1,9 @@
 /* ============================================================
    DIETARY INDEX — Light Scientific Editorial Design System
-   Follows vitaei.com: white/off-white bg, near-black text,
-   Playfair Display headings, JetBrains Mono labels, green accent
+   Palette: warm parchment bg, near-black text, sage/moss green
+   accent, dusty amber secondary — all in soft pastel tones.
+   Typography: Cormorant Garamond display, DM Sans body,
+   JetBrains Mono labels.
    ============================================================ */
 
 @import "tailwindcss";
@@ -35,36 +37,59 @@
 }
 
 :root {
-  --radius: 0.2rem;
+  --radius: 0.25rem;
 
-  --background: oklch(0.988 0.002 80);
-  --foreground: oklch(0.10 0.005 60);
-  --card: oklch(0.988 0.002 80);
-  --card-foreground: oklch(0.10 0.005 60);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.10 0.005 60);
-  --primary: oklch(0.35 0.09 148);
-  --primary-foreground: oklch(0.988 0.002 80);
-  --secondary: oklch(0.94 0.003 80);
-  --secondary-foreground: oklch(0.25 0.005 60);
-  --muted: oklch(0.94 0.003 80);
-  --muted-foreground: oklch(0.48 0.008 60);
-  --accent: oklch(0.94 0.003 80);
-  --accent-foreground: oklch(0.10 0.005 60);
-  --destructive: oklch(0.55 0.22 25);
-  --border: oklch(0.87 0.004 80);
-  --input: oklch(0.87 0.004 80);
-  --ring: oklch(0.35 0.09 148);
+  /* ── Background & surface ── */
+  /* Warm parchment — slightly warmer and creamier than before */
+  --background:        oklch(0.982 0.006 80);
+  --foreground:        oklch(0.14 0.008 55);
+  --card:              oklch(0.982 0.006 80);
+  --card-foreground:   oklch(0.14 0.008 55);
+  --popover:           oklch(0.995 0.003 80);
+  --popover-foreground: oklch(0.14 0.008 55);
 
-  /* Evidence tier tokens */
-  --tier-i: oklch(0.35 0.09 148);
-  --tier-ii: oklch(0.52 0.13 72);
-  --tier-iii: oklch(0.48 0.008 60);
+  /* ── Primary — sage green (pastel, not saturated) ── */
+  --primary:           oklch(0.42 0.07 152);
+  --primary-foreground: oklch(0.98 0.003 80);
 
-  /* Fonts */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  /* ── Secondary / muted surfaces ── */
+  --secondary:         oklch(0.952 0.007 80);
+  --secondary-foreground: oklch(0.28 0.007 55);
+  --muted:             oklch(0.952 0.007 80);
+  --muted-foreground:  oklch(0.50 0.010 60);
+  --accent:            oklch(0.952 0.007 80);
+  --accent-foreground: oklch(0.14 0.008 55);
+
+  /* ── Semantic ── */
+  --destructive:       oklch(0.58 0.16 25);
+  --border:            oklch(0.88 0.007 75);
+  --input:             oklch(0.88 0.007 75);
+  --ring:              oklch(0.42 0.07 152);
+
+  /* ── Evidence tier tokens — pastel tones ── */
+  /* Tier I: sage green */
+  --tier-i:            oklch(0.42 0.07 152);
+  /* Tier II: dusty amber */
+  --tier-ii:           oklch(0.58 0.10 72);
+  /* Tier III: warm grey */
+  --tier-iii:          oklch(0.50 0.008 60);
+
+  /* ── Affiliate button tokens — pastel ── */
+  /* Amazon: warm sand/amber pastel */
+  --amazon-bg:         oklch(0.93 0.05 78);
+  --amazon-text:       oklch(0.38 0.08 68);
+  --amazon-border:     oklch(0.82 0.07 75);
+  --amazon-hover-bg:   oklch(0.88 0.07 76);
+  /* iHerb: sage green pastel */
+  --iherb-bg:          oklch(0.92 0.05 152);
+  --iherb-text:        oklch(0.36 0.07 152);
+  --iherb-border:      oklch(0.80 0.07 150);
+  --iherb-hover-bg:    oklch(0.87 0.07 150);
+
+  /* ── Fonts ── */
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', 'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
 }
 
 @layer base {
@@ -73,16 +98,21 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    font-size: 14px;
-    line-height: 1.7;
+    font-size: 14.5px;
+    line-height: 1.72;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: 0.005em;
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -0.015em;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
   }
+  h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 500; }
+  h2 { font-size: clamp(1.4rem, 3vw, 2rem);  font-weight: 400; }
+  h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 400; }
+  p  { font-family: var(--font-body); }
   button:not(:disabled), a[href] { cursor: pointer; }
 }
 
@@ -105,22 +135,41 @@
 
   .mono { font-family: var(--font-mono); }
 
+  /* ── Tier pills ── */
   .tier-pill {
     font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.06em;
+    font-size: 0.56rem;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    padding: 0.1rem 0.4rem;
-    border-radius: 2px;
-    font-weight: 700;
+    padding: 0.12rem 0.45rem;
+    border-radius: 3px;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 0.2rem;
   }
-  .tier-i   { color: var(--tier-i);   background: oklch(0.35 0.09 148 / 0.07); border: 1px solid oklch(0.35 0.09 148 / 0.22); }
-  .tier-ii  { color: var(--tier-ii);  background: oklch(0.52 0.13 72 / 0.07);  border: 1px solid oklch(0.52 0.13 72 / 0.22); }
-  .tier-iii { color: var(--tier-iii); background: oklch(0.48 0.008 60 / 0.07); border: 1px solid oklch(0.48 0.008 60 / 0.22); }
+  .tier-i   { color: var(--tier-i);   background: oklch(0.42 0.07 152 / 0.08); border: 1px solid oklch(0.42 0.07 152 / 0.25); }
+  .tier-ii  { color: var(--tier-ii);  background: oklch(0.58 0.10 72  / 0.08); border: 1px solid oklch(0.58 0.10 72  / 0.25); }
+  .tier-iii { color: var(--tier-iii); background: oklch(0.50 0.008 60 / 0.07); border: 1px solid oklch(0.50 0.008 60 / 0.22); }
 
+  /* ── Affiliate buttons — pastel ── */
+  .btn-amazon {
+    background: var(--amazon-bg);
+    color: var(--amazon-text);
+    border: 1px solid var(--amazon-border);
+    transition: background 0.15s;
+  }
+  .btn-amazon:hover { background: var(--amazon-hover-bg); }
+
+  .btn-iherb {
+    background: var(--iherb-bg);
+    color: var(--iherb-text);
+    border: 1px solid var(--iherb-border);
+    transition: background 0.15s;
+  }
+  .btn-iherb:hover { background: var(--iherb-hover-bg); }
+
+  /* ── Section label ── */
   .section-label {
     font-family: var(--font-mono);
     font-size: 0.6rem;
@@ -129,11 +178,11 @@
     color: var(--muted-foreground);
   }
 
+  /* ── Scrollbar ── */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: oklch(0.80 0.004 80); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: oklch(0.82 0.006 75); border-radius: 2px; }
 
-  /* Hide scrollbar for filter tabs / TOC on mobile */
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 }
