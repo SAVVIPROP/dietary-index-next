@@ -1,3 +1,4 @@
+"use client";
 // LongevityPage — /journals/longevity
 // Design: vitaei.com light editorial — white bg, Playfair Display, JetBrains Mono
 import { useState } from "react";

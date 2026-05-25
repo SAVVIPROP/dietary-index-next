@@ -1,69 +1,69 @@
 "use client";
 /**
  * Wouter shim for Next.js App Router.
- * Intercepts all `from "wouter"` imports transparently.
- * Replace imports in page-components with `from "@/lib/wouter-shim"`.
+ * Battle-tested pattern from vitaei.com (180 commits, May 2026).
+ * Proxies all wouter primitives to next/navigation equivalents.
  */
 import NextLink from "next/link";
-import { usePathname, useRouter, useSearchParams, useParams as useNextParams } from "next/navigation";
-import type { ComponentProps, ReactNode } from "react";
+import { useRouter, useParams as useNextParams, useSearchParams } from "next/navigation";
+import { type ComponentProps, type ReactNode } from "react";
 
-// Link — wraps next/link
-export function Link({
-  href,
-  children,
-  ...props
-}: ComponentProps<typeof NextLink>) {
-  return (
-    <NextLink href={href} {...props}>
-      {children}
-    </NextLink>
-  );
+// Drop-in replacement for wouter's Link
+export function Link({ href, children, ...props }: ComponentProps<"a"> & { href: string }) {
+  return <NextLink href={href} {...(props as object)}>{children}</NextLink>;
 }
 
-// useLocation — returns [pathname, navigate]
-export function useLocation(): [string, (to: string) => void] {
-  const pathname = usePathname() ?? "/";
+// Drop-in replacement for wouter's useLocation
+// Uses window.location.pathname directly (not usePathname) for reliable active-link detection
+export function useLocation(): [string, (path: string) => void] {
   const router = useRouter();
-  return [pathname, (to: string) => router.push(to)];
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+  return [pathname, (path: string) => router.push(path)];
 }
 
-// useParams — wraps next/navigation useParams
-export function useParams<T extends Record<string, string> = Record<string, string>>(): T {
-  const params = useNextParams();
-  return (params ?? {}) as T;
+// Drop-in replacement for wouter's useParams
+export function useParams<T extends Record<string, string>>(): T {
+  return useNextParams() as T;
 }
 
-// useSearch — returns search string
+// Drop-in replacement for wouter's useSearch
 export function useSearch(): string {
   const searchParams = useSearchParams();
-  return searchParams?.toString() ?? "";
+  return searchParams ? searchParams.toString() : "";
 }
 
-// Route — renders children, ignores path prop (routing handled by Next.js file system)
-export function Route({
+// Drop-in replacement for wouter's Route (for slug injection in dynamic pages)
+export function Route<T extends Record<string, string>>({
+  path: _path,
+  component: Component,
   children,
 }: {
   path?: string;
-  component?: React.ComponentType;
+  component?: React.ComponentType<T>;
   children?: ReactNode;
 }) {
+  if (Component) {
+    const params = useNextParams() as T;
+    return <Component {...params} />;
+  }
   return <>{children}</>;
 }
 
-// Switch — renders children as-is
+// Drop-in replacement for wouter's Switch
 export function Switch({ children }: { children?: ReactNode }) {
   return <>{children}</>;
 }
 
-// Redirect — uses router.push
+// Drop-in replacement for wouter's Redirect
 export function Redirect({ to }: { to: string }) {
   const router = useRouter();
-  router.push(to);
+  if (typeof window !== "undefined") {
+    router.push(to);
+  }
   return null;
 }
 
-// useRoute — simplified, always returns [true, {}]
+// Drop-in replacement for wouter's useRoute
 export function useRoute(_path: string): [boolean, Record<string, string>] {
   return [true, {}];
 }

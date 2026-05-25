@@ -1,3 +1,4 @@
+"use client";
 // AffiliateSupplements — supplement cards on article pages
 // Design: vitaei.com light editorial — JetBrains Mono labels, site design system
 import { useEffect, useState } from 'react';

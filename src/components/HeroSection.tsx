@@ -1,3 +1,4 @@
+"use client";
 // HeroSection — interactive evidence network with clickable diet nodes
 // Design: vitaei.com light editorial — Playfair Display headings, JetBrains Mono labels
 import { useState } from "react";

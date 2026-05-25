@@ -1,3 +1,4 @@
+"use client";
 // JournalsSection — live search + filter + sort across 120+ articles
 // Design: vitaei.com light editorial — JetBrains Mono labels, Playfair Display headings
 // Search enhancements: sticky controls, "/" keyboard shortcut, result feedback, tag-click search

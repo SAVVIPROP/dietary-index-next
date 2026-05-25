@@ -1,3 +1,4 @@
+"use client";
 // DietComparePanel — side-by-side diet comparison modal
 // Design: vitaei.com light editorial — white bg, JetBrains Mono, Playfair Display
 import { X, ExternalLink, ChevronDown } from "lucide-react";

@@ -1,3 +1,4 @@
+"use client";
 /**
  * GUT HEALTH COLLECTION PAGE
  * Design: vitaei.com editorial light style

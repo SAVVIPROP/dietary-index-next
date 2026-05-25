@@ -1,3 +1,4 @@
+"use client";
 /**
  * ReadingListPanel — slide-out drawer showing all bookmarked items
  * Design: vitaei.com light editorial style

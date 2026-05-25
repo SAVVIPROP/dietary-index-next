@@ -1,3 +1,4 @@
+"use client";
 // Home — Dietary Index main page
 // Design: Light scientific editorial, follows vitaei.com aesthetic
 // Sections: Hero → Science → Frameworks → Research → Index → Atlas → Glossary → Methodology → Journals → Footer

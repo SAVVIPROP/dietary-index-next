@@ -1,3 +1,4 @@
+"use client";
 // Footer — mobile-first with reading list bookmark count
 import { useState, useEffect } from "react";
 

@@ -1,3 +1,4 @@
+"use client";
 // VideosPage — Dietary Index Video Channel
 // Layout mirrors vitaei.com/videos exactly, adapted for dietary science
 

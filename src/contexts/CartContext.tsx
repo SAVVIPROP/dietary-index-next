@@ -1,3 +1,4 @@
+"use client";
 // CartContext — site-wide supplement shopping cart
 // Persisted to localStorage under "di_cart"
 // CartItem maps to a SupplementEntry from affiliateLinks.ts

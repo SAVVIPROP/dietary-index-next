@@ -1,3 +1,4 @@
+"use client";
 // ResearchSection — mobile-first with per-paper share + bookmark
 import { useState } from "react";
 import { researchPapers } from "@/lib/data";

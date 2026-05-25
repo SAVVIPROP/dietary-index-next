@@ -1,3 +1,4 @@
+"use client";
 // JournalsPage — dedicated route for /journals
 // Supports ?verdict=Myths URL param to pre-filter the section (used by the Myths banner)
 import { useEffect, useRef } from "react";

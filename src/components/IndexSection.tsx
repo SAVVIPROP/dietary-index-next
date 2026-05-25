@@ -1,3 +1,4 @@
+"use client";
 // Design: vitaei.com light editorial — JetBrains Mono labels, Playfair Display
 import { useState } from "react";
 import { diets, type Diet, type EvidenceTier } from "@/lib/data";

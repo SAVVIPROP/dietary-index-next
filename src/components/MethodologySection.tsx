@@ -1,3 +1,4 @@
+"use client";
 // MethodologySection — mobile-first with share + bookmark
 import ShareBookmark from "@/components/ShareBookmark";
 import { journalArticles } from "@/lib/journals";

@@ -1,3 +1,4 @@
+"use client";
 // VideoChannelStrip — "From the Video Channel" homepage section
 // Shows 3 featured video cards with real YouTube thumbnails
 

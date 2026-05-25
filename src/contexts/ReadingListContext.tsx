@@ -1,3 +1,4 @@
+"use client";
 /**
  * ReadingListContext — global bookmark/reading list state
  * Persists to localStorage under "di_bookmarks"

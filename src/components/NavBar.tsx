@@ -1,3 +1,4 @@
+"use client";
 // NavBar — sticky header with compact premium mega menu using custom SVG icons
 // Design: vitaei.com light editorial — JetBrains Mono labels, Playfair Display wordmark
 // Mega menu: Stripe/Linear-style — compact, icon-per-link, no AI images

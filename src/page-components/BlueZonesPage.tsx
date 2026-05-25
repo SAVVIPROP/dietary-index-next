@@ -1,3 +1,4 @@
+"use client";
 /**
  * DIETARY INDEX — Blue Zones Collection Page
  * Design: Light editorial, vitaei.com style

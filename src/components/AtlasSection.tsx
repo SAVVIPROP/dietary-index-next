@@ -1,3 +1,4 @@
+"use client";
 // AtlasSection — mobile-friendly scrollable heatmap with share + bookmark
 import { useState } from "react";
 import { diets, healthOutcomes } from "@/lib/data";

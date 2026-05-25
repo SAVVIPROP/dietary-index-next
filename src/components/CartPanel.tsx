@@ -1,3 +1,4 @@
+"use client";
 // CartPanel — slide-out supplement cart panel
 // Design: vitaei.com light editorial — JetBrains Mono labels, Playfair Display headings
 import { useEffect, useRef, useState, useCallback } from "react";

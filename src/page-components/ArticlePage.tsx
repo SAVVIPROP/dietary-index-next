@@ -1,3 +1,4 @@
+"use client";
 // ArticlePage — full individual journal article view with world-class SEO
 import { useParams, Link } from "@/lib/wouter-shim";
 import { journalArticles, verdictColors } from "@/lib/journals";

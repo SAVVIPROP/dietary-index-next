@@ -1,3 +1,4 @@
+"use client";
 // ProtocolPage — Evidence-based Dietary Assessment & Protocol Generator
 // Design: vitaei.com light editorial style — white bg, Playfair Display headings, JetBrains Mono labels
 import { useState, useRef, useEffect, useCallback } from "react";

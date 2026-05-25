@@ -1,3 +1,4 @@
+"use client";
 /**
  * GOOGLE MAPS FRONTEND INTEGRATION - ESSENTIAL GUIDE
  *
