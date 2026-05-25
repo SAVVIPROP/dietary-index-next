@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { ClientLayout } from "@/components/ClientLayout";
 
 export const dynamic = "force-dynamic";
 
@@ -85,7 +86,11 @@ export default function RootLayout({
         <meta name="color-scheme" content="light" />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <ClientLayout>
+            {children}
+          </ClientLayout>
+        </Providers>
       </body>
     </html>
   );
