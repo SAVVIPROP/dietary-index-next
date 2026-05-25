@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, websiteSchema, organizationSchema } from "@/lib/seo";
 import HomeClient from "./HomeClient";
 
 export const metadata: Metadata = {
@@ -9,6 +9,22 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
 };
 
+// Combined JSON-LD: WebSite + Organization — server-rendered for Google indexing
+const homepageJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [websiteSchema(), organizationSchema()],
+};
+
 export default function Page() {
-  return <HomeClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homepageJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <HomeClient />
+    </>
+  );
 }

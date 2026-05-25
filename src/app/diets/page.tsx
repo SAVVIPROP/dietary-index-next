@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { breadcrumbSchema, SITE_URL } from "@/lib/seo";
 import DietsPageClient from "./DietsPageClient";
 
 export const metadata: Metadata = {
@@ -7,6 +8,19 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://dietaryindex.com/diets" },
 };
 
+const jsonLd = breadcrumbSchema([
+  { name: "Dietary Index", url: SITE_URL },
+  { name: "Dietary Patterns", url: `${SITE_URL}/diets` },
+]);
+
 export default function Page() {
-  return <DietsPageClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
+      <DietsPageClient />
+    </>
+  );
 }

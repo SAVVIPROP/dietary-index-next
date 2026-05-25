@@ -2,7 +2,7 @@
    DIETARY INDEX — Light Scientific Editorial Design System
    Palette: warm parchment bg, near-black text, sage/moss green
    accent, dusty amber secondary — all in soft pastel tones.
-   Typography: Cormorant Garamond display, DM Sans body,
+   Typography: Instrument Serif display, DM Sans body,
    JetBrains Mono labels.
    ============================================================ */
 
@@ -87,7 +87,7 @@
   --iherb-hover-bg:    oklch(0.87 0.07 150);
 
   /* ── Fonts ── */
-  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
   --font-body:    'DM Sans', 'Inter', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', 'Courier New', monospace;
 }
