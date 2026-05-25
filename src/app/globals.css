@@ -1,0 +1,139 @@
+/* ============================================================
+   DIETARY INDEX — Light Scientific Editorial Design System
+   Follows vitaei.com: white/off-white bg, near-black text,
+   Playfair Display headings, JetBrains Mono labels, green accent
+   ============================================================ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.2rem;
+
+  --background: oklch(0.988 0.002 80);
+  --foreground: oklch(0.10 0.005 60);
+  --card: oklch(0.988 0.002 80);
+  --card-foreground: oklch(0.10 0.005 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.10 0.005 60);
+  --primary: oklch(0.35 0.09 148);
+  --primary-foreground: oklch(0.988 0.002 80);
+  --secondary: oklch(0.94 0.003 80);
+  --secondary-foreground: oklch(0.25 0.005 60);
+  --muted: oklch(0.94 0.003 80);
+  --muted-foreground: oklch(0.48 0.008 60);
+  --accent: oklch(0.94 0.003 80);
+  --accent-foreground: oklch(0.10 0.005 60);
+  --destructive: oklch(0.55 0.22 25);
+  --border: oklch(0.87 0.004 80);
+  --input: oklch(0.87 0.004 80);
+  --ring: oklch(0.35 0.09 148);
+
+  /* Evidence tier tokens */
+  --tier-i: oklch(0.35 0.09 148);
+  --tier-ii: oklch(0.52 0.13 72);
+  --tier-iii: oklch(0.48 0.008 60);
+
+  /* Fonts */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  button:not(:disabled), a[href] { cursor: pointer; }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .flex { min-height: 0; min-width: 0; }
+
+  @media (min-width: 768px) {
+    .container { padding-left: 2.5rem; padding-right: 2.5rem; }
+  }
+  @media (min-width: 1280px) {
+    .container { max-width: 1360px; padding-left: 5rem; padding-right: 5rem; }
+  }
+
+  .mono { font-family: var(--font-mono); }
+
+  .tier-pill {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .tier-i   { color: var(--tier-i);   background: oklch(0.35 0.09 148 / 0.07); border: 1px solid oklch(0.35 0.09 148 / 0.22); }
+  .tier-ii  { color: var(--tier-ii);  background: oklch(0.52 0.13 72 / 0.07);  border: 1px solid oklch(0.52 0.13 72 / 0.22); }
+  .tier-iii { color: var(--tier-iii); background: oklch(0.48 0.008 60 / 0.07); border: 1px solid oklch(0.48 0.008 60 / 0.22); }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: oklch(0.80 0.004 80); border-radius: 2px; }
+
+  /* Hide scrollbar for filter tabs / TOC on mobile */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+}
