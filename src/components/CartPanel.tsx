@@ -13,8 +13,25 @@ import {
   shouldShowAmazon,
   detectRegion,
   countryToRegion,
+  SUPPLEMENT_PRODUCTS,
   type AffiliateRegion,
 } from "@/lib/affiliateLinks";
+
+// Featured supplements shown in empty state — most evidence-backed, most referenced across articles
+const FEATURED_KEYS = [
+  'omega-3',
+  'magnesium',
+  'vitamin-d',
+  'vitamin-k2',
+  'creatine',
+  'zinc',
+  'coq10',
+  'nmn',
+  'berberine',
+  'curcumin',
+  'ashwagandha',
+  'collagen',
+];
 
 const CloseIcon = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
@@ -28,11 +45,15 @@ const TrashIcon = () => (
   </svg>
 );
 
-const CartEmptyIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth={1} strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground/30">
-    <path d="M4 4h3l2.5 14h13l2.5-10H9" />
-    <circle cx="12" cy="26" r="1.5" />
-    <circle cx="22" cy="26" r="1.5" />
+const PlusIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
@@ -61,7 +82,7 @@ const CheckSmallIcon = () => (
 );
 
 export default function CartPanel() {
-  const { items, count, removeItem, clearCart, isOpen, closeCart } = useCart();
+  const { items, count, addItem, removeItem, hasItem, clearCart, isOpen, closeCart, openCart } = useCart();
   const [region, setRegion] = useState<AffiliateRegion>(() => detectRegion());
   const panelRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
@@ -128,6 +149,12 @@ export default function CartPanel() {
     urls.forEach(url => window.open(url, '_blank', 'noopener,noreferrer'));
   };
 
+  // Build featured entries for empty state
+  const featuredEntries = FEATURED_KEYS.flatMap((key) => {
+    const products = SUPPLEMENT_PRODUCTS[key] ?? [];
+    return products.slice(0, 1).map((product) => ({ key, product }));
+  });
+
   return (
     <>
       {/* Backdrop */}
@@ -148,7 +175,9 @@ export default function CartPanel() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">Cart</span>
+            <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
+              {count === 0 ? "Supplements" : "Cart"}
+            </span>
             {count > 0 && (
               <span className="text-[9px] font-mono bg-foreground text-background px-1.5 py-0.5 rounded-sm">
                 {count}
@@ -167,14 +196,54 @@ export default function CartPanel() {
         {/* Items */}
         <div className="flex-1 overflow-y-auto">
           {count === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
-              <CartEmptyIcon />
-              <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Your cart is empty</p>
-                <p className="text-[11px] font-mono text-muted-foreground/50">
-                  Add supplements from article pages or the Protocol Builder
+            // Empty state — show featured supplement catalogue
+            <div className="flex flex-col">
+              <div className="px-5 pt-5 pb-3">
+                <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
+                  Evidence-backed supplements referenced across our articles. Add to your stack and buy from Amazon or iHerb.
                 </p>
               </div>
+              <div className="divide-y divide-border">
+                {featuredEntries.map(({ key, product }) => {
+                  const inCart = hasItem(key);
+                  return (
+                    <div key={key} className="px-5 py-3.5 flex items-start gap-3">
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-medium text-foreground leading-snug">{product.name}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{product.dose}</p>
+                        <p className="text-[10px] text-muted-foreground/70 leading-relaxed mt-1">{product.note}</p>
+                      </div>
+                      {/* Add button */}
+                      <button
+                        onClick={() => {
+                          if (inCart) {
+                            removeItem(key);
+                          } else {
+                            addItem(key, product);
+                          }
+                        }}
+                        aria-label={inCart ? `Remove ${product.name}` : `Add ${product.name} to cart`}
+                        className={`shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center border transition-all ${
+                          inCart
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-border hover:border-foreground/50 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {inCart ? <CheckIcon /> : <PlusIcon />}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Hint when items have been added from the catalogue */}
+              {count > 0 && (
+                <div className="px-5 py-4 border-t border-border">
+                  <p className="text-[10px] font-mono text-muted-foreground/50 text-center">
+                    {count} item{count !== 1 ? "s" : ""} in cart — scroll up to checkout
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="divide-y divide-border">
@@ -240,7 +309,7 @@ export default function CartPanel() {
           )}
         </div>
 
-        {/* Footer actions */}
+        {/* Footer actions — only when cart has items */}
         {count > 0 && (
           <div className="border-t border-border px-5 py-4 flex flex-col gap-3 shrink-0">
             {/* Checkout row */}
